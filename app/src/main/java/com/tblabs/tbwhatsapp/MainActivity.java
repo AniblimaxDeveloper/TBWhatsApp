@@ -695,16 +695,6 @@ public class MainActivity extends Activity {
         return java.security.MessageDigest.isEqual(a.getBytes(java.nio.charset.StandardCharsets.UTF_8), b.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
-    private void showUnlockDialog() {
-        EditText input = new EditText(this); input.setSingleLine(true); input.setInputType(2); input.setHint("Masukkan PIN");
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle("TBWhatsApp terkunci").setMessage("Masukkan PIN lokal untuk melanjutkan.").setView(input)
-                .setCancelable(false).setPositiveButton("Buka", null).create();
-        dialog.setOnShowListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(btn -> {
-            if (input.getText().toString().equals(profilePin)) { lockPassed = true; dialog.dismiss(); }
-            else { input.setError("PIN salah"); }
-        }));
-        dialog.show();
-    }
 
     private void showEmojiDialog() {
         String[] emojis = {"😀", "😁", "😂", "🥰", "😍", "😎", "😭", "🙏", "👍", "❤️", "🔥", "✨", "🎉", "🤝", "☕", "🌙"};
