@@ -1,66 +1,70 @@
-# TBWhatsApp — Android UI Prototype
+# TBWhatsApp V2.0.0
 
-TBWhatsApp is an independent Android messenger-style prototype. It is **not affiliated with, endorsed by, or a modified build of WhatsApp/Meta**.
+TBWhatsApp adalah aplikasi Android messenger mandiri (independent messenger prototype). Aplikasi ini bukan modifikasi APK WhatsApp resmi, tidak terafiliasi dengan WhatsApp/Meta, dan tidak dapat masuk ke akun WhatsApp resmi.
 
-## Current prototype features
+## Fitur V2 yang tersedia secara lokal
 
-- Chat list with local sample conversations.
-- Search and chat filters (all, unread, favorites, groups).
-- Conversation screen with local in-memory message bubbles and a working demo send button.
-- Updates/status and call-history demo screens.
-- Dark mode, compact chat rows, and message-preview privacy setting saved locally.
-- GitHub Actions workflow that builds and uploads a debug APK.
+- Lima tab: Chat, Update, Panggilan, Komunitas, Setelan.
+- Percakapan lokal: buat chat pribadi/grup, kirim pesan teks, emoji, hapus pesan, salin dan bagikan pesan.
+- Penyimpanan lokal permanen menggunakan SharedPreferences + JSON.
+- Pencarian percakapan dan filter Semua, Belum dibaca, Favorit, Grup, Diarsipkan.
+- Pin, favorit, mute, arsip, hapus, dan ekspor percakapan.
+- Status teks lokal: buat, lihat, dan hapus.
+- Komunitas lokal: buat dan hapus ruang komunitas contoh.
+- Riwayat panggilan contoh; tombol panggilan tidak memulai panggilan sungguhan.
+- Tema gelap, tampilan ringkas, sembunyikan pratinjau, preferensi tanda baca lokal.
+- Kunci aplikasi dengan PIN lokal berbasis hash PBKDF2 + salt.
+- Edit profil lokal, ekspor data melalui Android Share Sheet, dan reset data demo.
 
-## Important limitations
+## Batas fungsi saat ini
 
-This version is an offline UI prototype. Messages are stored only in memory and disappear when the app process is restarted. It does not connect to WhatsApp servers, send messages to WhatsApp users, clone the official WhatsApp app, or access WhatsApp databases. Real messaging requires a separately designed backend and user-consented accounts. Never put API secrets or service-account keys inside the APK.
+Pesan, status, komunitas, dan profil hanya tersimpan di perangkat yang sama. Belum ada akun online, server, pengiriman pesan antarpengguna, sinkronisasi, enkripsi end-to-end, panggilan suara/video, push notification, atau pengiriman media. Tombol dan label demo tidak boleh dianggap sebagai layanan yang sudah aktif.
 
-## Build on GitHub
+## Persyaratan build
 
-1. Create an empty GitHub repository named `TBWhatsApp`.
-2. Upload/push this project to the repository's `main` branch.
-3. Open the repository's **Actions** tab.
-4. Select **Build TBWhatsApp APK** and wait for the workflow to finish.
-5. Open the completed workflow run and download the `TBWhatsApp-debug-apk` artifact.
+- Android Gradle Plugin 8.13.2
+- Gradle 8.13
+- JDK 17
+- Android SDK 36
+- minSdk 23 (Android 6.0)
 
-The workflow uses Java 17, Gradle 8.13, and Android Gradle Plugin 8.13.2.
+## Build APK lewat GitHub Actions
 
-## Termux workflow
+1. Ekstrak proyek dan push seluruh isi ke repository GitHub.
+2. Buka tab **Actions**.
+3. Workflow **TBWhatsApp V2 - Build APK** berjalan otomatis saat push ke `main` atau `master`.
+4. Unduh artifact `TBWhatsApp-V2-debug` untuk APK debug.
 
-Termux is used to edit the source and push it to GitHub; GitHub's Linux runner performs the Android SDK build.
+## Membuat signed release APK
+
+Release APK harus ditandatangani dengan keystore milik pembuat aplikasi. Dari Termux, setelah berada di root repository dan sudah login `gh`, jalankan:
 
 ```bash
-pkg update -y
-pkg install git gh nano unzip -y
-mkdir -p ~/projects
-cd ~/projects
-unzip ~/storage/downloads/TBWhatsApp.zip
-cd TBWhatsApp
+bash scripts/setup-release-signing.sh
+```
 
-git init
+Skrip membuat `tbwhatsapp-release.jks` dan mengunggah empat GitHub Actions Secrets ke repository aktif: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
+
+Setelah secrets tersedia, push commit baru atau jalankan workflow secara manual. Workflow akan menghasilkan artifact `TBWhatsApp-V2-release-signed`.
+
+Untuk menerbitkan GitHub Release, buat dan push tag versi, misalnya:
+
+```bash
+git tag v2.0.0
+git push origin v2.0.0
+```
+
+Jika signing secrets tersedia, APK signed akan dilampirkan pada GitHub Release untuk tag tersebut.
+
+**Keystore wajib dibackup.** Jika file keystore/password hilang, pembaruan aplikasi yang menggunakan applicationId dan sertifikat yang sama tidak dapat ditandatangani dengan identitas lama. Jangan masukkan keystore atau password ke Git.
+
+## Perintah Termux
+
+```bash
+cd ~/projects/TBWhatsApp
 git add .
-git commit -m "Initial TBWhatsApp project"
-git branch -M main
+git commit -m "TBWhatsApp V2.0.0"
+git push origin main
 ```
 
-Create an empty GitHub repo, then connect it (replace the URL with your own repository URL):
-
-```bash
-git remote add origin https://github.com/USERNAME/TBWhatsApp.git
-git push -u origin main
-```
-
-After later edits:
-
-```bash
-git add .
-git commit -m "Update TBWhatsApp"
-git push
-```
-
-## Package information
-
-- Application ID: `com.tblabs.tbwhatsapp`
-- Minimum Android: Android 6.0 (API 23)
-- Compile SDK: 36
-- Version: 1.0.0
+Jangan menjalankan `git init` berulang kali jika repository sudah ada.
