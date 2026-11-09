@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tb_accent">#087F73</color>
+    <color name="tb_accent_dark">#075E54</color>
+    <color name="tb_white">#FFFFFF</color>
+</resources>
